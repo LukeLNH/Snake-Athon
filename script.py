@@ -1,11 +1,10 @@
 import pygame
-
+# testing some stuff
 
 class Snake():
 
-    snake_blocks = [] # idx 0 is the head, the rest is the body
-
     def __init__(self):
+        self.snake_blocks = [] # idx 0 is the head, the rest is the body
         # set initial length of snake
         pass
 
@@ -24,11 +23,11 @@ class Snake():
 
 
 class Food():
-    position = (0,0)
-    score = 100
-    check_eaten = False
 
     def __init__(self):
+        self.position = (0,0)
+        self.score = 100
+        self.check_eaten = False
         pass
 
 
