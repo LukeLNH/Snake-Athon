@@ -12,7 +12,7 @@ colorPrim = (64,71,109)
 colorSec = (130,103,84)
 colorSnake = (66,158,94)
 
-size = width, height = 640, 640 #740
+size = width, height = 640, 740
 MINx = 20
 MINy = 120
 MAXx = 620
@@ -45,7 +45,7 @@ class Snake():
         self.alive = True
 
     def check_dead(self, new_head):
-        return new_head[0] < 0 or new_head[1] < 0 or new_head[0] > screen_width - grid_size or new_head[1] > screen_height - grid_size or new_head in self.snake_blocks[1:]
+        return new_head[0] < MINx or new_head[1] < MINy or new_head[0] > MAXx - grid_size or new_head[1] > MAXy - grid_size or new_head in self.snake_blocks[1:]
 
     def move(self, direction = None):
         
