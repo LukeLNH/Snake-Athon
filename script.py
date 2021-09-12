@@ -76,6 +76,7 @@ class Snake():
     def eat_food(self, food):
         self.score = self.score + food.score
         # grow the snek
+        self.snake_blocks.append(self.last_tail)
 
     def get_score(self):
         return self.score
@@ -90,15 +91,19 @@ class Food():
 def render_food(food: Food): # Implement after we figure out pygame
     pygame.draw.rect(screen,colorFood,[MINx + food.position[0], MINy + food.position[1], grid_size,grid_size])
 
-def make_food():
-    position = (random.randint(0,19) * grid_size, random.randint(0,19) * grid_size)
+def make_food(snake):
+    while True:
+        position = (random.randint(0,19) * grid_size, random.randint(0,19) * grid_size)
+        scaled_pos = (position[0] + MINx, position[1] + MINy)
+        if scaled_pos not in snake.snake_blocks:
+            break
     food = Food(position)
     return food
 
 def setup():
 
     snake = Snake()
-    food = make_food()
+    food = make_food(snake)
     while True:
         clock.tick(5)
         direction = None
@@ -129,7 +134,7 @@ def setup():
         snake_head_pos = (snake_head_pos[0] - MINx, snake_head_pos[1] - MINy)
         if food.position == snake_head_pos:
             snake.eat_food(food)
-            food = make_food()
+            food = make_food(snake)
         
         render_food(food)
         for block in snake.snake_blocks:
