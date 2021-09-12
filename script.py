@@ -31,11 +31,6 @@ pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
 #load checker
 checker = pygame.image.load("checker.png")
 
-#function that sets score
-def update_score(score):
-    value = score_font.render("Current Score: " + str(score), True, colorSec)
-    screen.blit(value, [50, 50])
-
 class Snake():
 
     def __init__(self):
@@ -108,7 +103,9 @@ def setup():
         clock.tick(5)
         direction = None
         
-        update_score(snake.score)
+        value = score_font.render("Current Score: %s      " % str(snake.score), True, colorSec, colorPrim)
+        screen.blit(value, [50, 50])
+        
         #increase length when eat, call your score
         pygame.display.flip()
 
