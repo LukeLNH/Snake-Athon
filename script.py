@@ -32,7 +32,6 @@ pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
 checker = pygame.image.load("checker.png")
 
 class Snake():
-
     def __init__(self):
         self.snake_blocks = [(screen_width/2, 420), (screen_width/2 - 1*grid_size, 420), (screen_width/2 - 2*grid_size, 420), (screen_width/2 - 3*grid_size, 420), (screen_width/2 - 4*grid_size, 420)] # idx 0 is the head, the rest is the body
         self.last_tail = (0,0)
@@ -86,6 +85,7 @@ class Food():
 def render_food(food: Food): # Implement after we figure out pygame
     pygame.draw.rect(screen,colorFood,[MINx + food.position[0], MINy + food.position[1], grid_size,grid_size])
 
+# Spawnning in snake bug is still here
 def make_food(snake):
     while True:
         position = (random.randint(0,19) * grid_size, random.randint(0,19) * grid_size)
@@ -96,52 +96,74 @@ def make_food(snake):
     return food
 
 def setup():
-
+    active_game = True
     snake = Snake()
     food = make_food(snake)
     while True:
-        clock.tick(5)
-        direction = None
-        
-        value = score_font.render("Current Score: %s      " % str(snake.score), True, colorSec, colorPrim)
-        screen.blit(value, [50, 50])
-        
-        #increase length when eat, call your score
-        pygame.display.flip()
+        if active_game:
+            clock.tick(5)
+            direction = None
+            
+            value = score_font.render("Current Score: %s      " % str(snake.score), True, colorSec, colorPrim)
+            screen.blit(value, [50, 50])
+            #increase length when eat, call your score
+            pygame.display.flip()
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT: sys.exit()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: sys.exit()
 
-            if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN:
+                    
+                    if event.key == pygame.K_UP:
+                        direction = (0, -1)
+                    elif event.key == pygame.K_DOWN:
+                        direction = (0, 1)
+                    elif event.key == pygame.K_LEFT:
+                        direction = (-1, 0)
+                    elif event.key == pygame.K_RIGHT:
+                        direction = (1, 0)
+            snake.move(direction)
+            # pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
+
+            screen.blit(checker, (0,100))
+
+            snake_head_pos = snake.get_head_pos()
+            snake_head_pos = (snake_head_pos[0] - MINx, snake_head_pos[1] - MINy)
+            if food.position == snake_head_pos:
+                snake.eat_food(food)
+                food = make_food(snake)
+            
+            render_food(food)
+            for block in snake.snake_blocks:
+                pygame.draw.rect(screen,colorSnake,[block[0],block[1],grid_size,grid_size])
+            
+            if snake.alive == False:
+                score = snake.score
+                active_game = False
+                del snake
+                del food
+                pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
+                pygame.draw.rect(screen, colorSec, pygame.Rect(200, 300, 240, 50))
                 
-                if event.key == pygame.K_UP:
-                    direction = (0, -1)
-                elif event.key == pygame.K_DOWN:
-                    direction = (0, 1)
-                elif event.key == pygame.K_LEFT:
-                    direction = (-1, 0)
-                elif event.key == pygame.K_RIGHT:
-                    direction = (1, 0)
-        snake.move(direction)
-        # pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
+                value = score_font.render("Current Score: " + str(score), True, colorSec)
+                screen.blit(value, [200, 250])
 
-        screen.blit(checker, (0,100))
+                value = score_font.render("RESTART", True, colorPrim)
+                screen.blit(value, [245, 306])
+            pygame.display.update()
+        
+        else: # display the score + restart button
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: sys.exit()
 
-        snake_head_pos = snake.get_head_pos()
-        snake_head_pos = (snake_head_pos[0] - MINx, snake_head_pos[1] - MINy)
-        if food.position == snake_head_pos:
-            snake.eat_food(food)
-            food = make_food(snake)
-        
-        render_food(food)
-        for block in snake.snake_blocks:
-            pygame.draw.rect(screen,colorSnake,[block[0],block[1],grid_size,grid_size])
-        
-        # TODO: Heiiiiiiii remember to change this shit
-        if snake.alive == False:
-            sys.exit()
-        pygame.display.update()
-    #     if eating food, increase score and leave tail alone, else remove tail
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse = pygame.mouse.get_pos()
+                    if (200 <= mouse[0] <= 440) and (300 <= mouse[1] <= 350):
+                        active_game = True
+                        snake = Snake()
+                        food = make_food(snake)
+
+
     
 
 def main():
