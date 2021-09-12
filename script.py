@@ -1,10 +1,16 @@
 import pygame
 import random
 import sys
+pygame.init()
 
 screen_width = 640
 screen_height = 640
 grid_size = 30
+
+# Initialing Color
+colorPrim = (64,71,109)
+colorSec = (130,103,84)
+colorSnake = (66,158,94)
 
 size = width, height = 640, 640 #740
 MINx = 20
@@ -14,10 +20,25 @@ MAXy = 720
 STARTx = 320
 STARTy = 420
 
+clock = pygame.time.Clock()
+screen = pygame.display.set_mode(size)
+pygame.display.set_caption('Snake by Error404')
+score_font = pygame.font.SysFont("timesnewroman", 35)
+
+# Drawing Rectangle
+pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
+#load checker
+checker = pygame.image.load("checker.png")
+
+#function that sets score
+def update_score(score):
+    value = score_font.render("Current Score: " + str(score), True, colorSec)
+    screen.blit(value, [50, 50])
+
 class Snake():
 
     def __init__(self):
-        self.snake_blocks = [(screen_width/2, screen_height/2), (screen_width/2 - 1*grid_size, screen_height/2), (screen_width/2 - 2*grid_size, screen_height/2)] # idx 0 is the head, the rest is the body
+        self.snake_blocks = [(screen_width/2, 420), (screen_width/2 - 1*grid_size, 420), (screen_width/2 - 2*grid_size, 420)] # idx 0 is the head, the rest is the body
         self.last_tail = (0,0)
         self.score = 0
         self.direction = (1,0)
@@ -27,7 +48,7 @@ class Snake():
         return new_head[0] < 0 or new_head[1] < 0 or new_head[0] > screen_width - grid_size or new_head[1] > screen_height - grid_size or new_head in self.snake_blocks[1:]
 
     def move(self, direction = None):
-        print(direction)
+        
         if direction == None:
             direction = self.direction
         
@@ -69,30 +90,23 @@ def make_food():
     food = Food(position)
     render_food(food)
 
-def display_score():
-    pass
-
 def setup():
-    pygame.init()
-    clock = pygame.time.Clock()
-    screen = pygame.display.set_mode(size)
-    pygame.display.set_caption('Snake by Error404')
-    # Initialing Color
-    colorPrim = (64,71,109)
-    colorSec = (235,101,52)
-    colorSnake = (100,100,100)
 
-    # Drawing Rectangle
-    pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
     snake = Snake()
+
     while True:
-        clock.tick(10)
+        clock.tick(5)
         direction = None
+        
+        update_score(snake.score)
+        #increase length when eat, call your score
+        pygame.display.flip()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit()
 
             if event.type == pygame.KEYDOWN:
-                # print(f"registering key press: {event.type}")
+                
                 if event.key == pygame.K_UP:
                     direction = (0, -1)
                 elif event.key == pygame.K_DOWN:
@@ -102,7 +116,9 @@ def setup():
                 elif event.key == pygame.K_RIGHT:
                     direction = (1, 0)
         snake.move(direction)
-        pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
+        # pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
+
+        screen.blit(checker, (0,100))
         for block in snake.snake_blocks:
             pygame.draw.rect(screen,colorSnake,[block[0],block[1],grid_size,grid_size])
         
