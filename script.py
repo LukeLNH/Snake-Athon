@@ -103,7 +103,7 @@ def setup():
     screen.fill(colorPrim)
     pygame.draw.rect(screen, colorSec, pygame.Rect(200, 300, 240, 50))
     value = score_font.render("PLAY", True, colorPrim)
-    screen.blit(value, [245, 306])
+    screen.blit(value, [275, 306])
     pygame.display.update()
     welcome = True
     while welcome:
