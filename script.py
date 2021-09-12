@@ -45,6 +45,9 @@ class Snake():
         self.direction = (1,0)
         self.alive = True
 
+    def get_head_pos(self):
+        return self.snake_blocks[0]
+
     def check_dead(self, new_head):
         return new_head[0] < MINx or new_head[1] < MINy or new_head[0] > MAXx - grid_size or new_head[1] > MAXy - grid_size or new_head in self.snake_blocks[1:]
 
@@ -72,7 +75,7 @@ class Snake():
 
     def eat_food(self, food):
         self.score = self.score + food.score
-        make_food()
+        # grow the snek
 
     def get_score(self):
         return self.score
@@ -85,10 +88,10 @@ class Food():
         self.check_eaten = False
 
 def render_food(food: Food): # Implement after we figure out pygame
-    pygame.draw.rect(screen,colorFood,[MINx + food.position[0] * grid_size, MINy + food.position[1] * grid_size, grid_size,grid_size])
+    pygame.draw.rect(screen,colorFood,[MINx + food.position[0], MINy + food.position[1], grid_size,grid_size])
 
 def make_food():
-    position = (random.randint(0,19), random.randint(0,19))
+    position = (random.randint(0,19) * grid_size, random.randint(0,19) * grid_size)
     food = Food(position)
     return food
 
@@ -121,6 +124,13 @@ def setup():
         # pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
 
         screen.blit(checker, (0,100))
+
+        snake_head_pos = snake.get_head_pos()
+        snake_head_pos = (snake_head_pos[0] - MINx, snake_head_pos[1] - MINy)
+        if food.position == snake_head_pos:
+            snake.eat_food(food)
+            food = make_food()
+        
         render_food(food)
         for block in snake.snake_blocks:
             pygame.draw.rect(screen,colorSnake,[block[0],block[1],grid_size,grid_size])
