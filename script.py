@@ -96,14 +96,35 @@ def make_food(snake):
     return food
 
 def setup():
-    active_game = True
+    active_game = False
     snake = Snake()
     food = make_food(snake)
+    
+    screen.fill(colorPrim)
+    pygame.draw.rect(screen, colorSec, pygame.Rect(200, 300, 240, 50))
+    value = score_font.render("PLAY", True, colorPrim)
+    screen.blit(value, [245, 306])
+    pygame.display.update()
+    welcome = True
+    while welcome:
+        clock.tick(5)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                print("Click")
+                mouse = pygame.mouse.get_pos()
+                if (200 <= mouse[0] <= 440) and (300 <= mouse[1] <= 350):
+                    welcome = False
+                    # screen.blit(checker, (0,100))
+                    # value = score_font.render("Current Score: %s      " % str(snake.score), True, colorSec, colorPrim)
+                    # screen.blit(value, [50, 50])
+                    pygame.display.update()
+
     while True:
         if active_game:
             clock.tick(5)
             direction = None
-            
             value = score_font.render("Current Score: %s      " % str(snake.score), True, colorSec, colorPrim)
             screen.blit(value, [50, 50])
             #increase length when eat, call your score
