@@ -5,6 +5,6 @@ executables = [cx_Freeze.Executable("script.py")]
 cx_Freeze.setup(
     name="snakeathon",
     options={"build_exe": {"packages":["pygame"],
-                           "include_files":[".idea/checker.png"]}},
+                           "include_files":["checker.png"]}},
     executables = executables
     )
