@@ -11,6 +11,7 @@ grid_size = 30
 colorPrim = (64,71,109)
 colorSec = (130,103,84)
 colorSnake = (66,158,94)
+colorFood = (240, 55, 165)
 
 size = width, height = 640, 740
 MINx = 20
@@ -38,7 +39,7 @@ def update_score(score):
 class Snake():
 
     def __init__(self):
-        self.snake_blocks = [(screen_width/2, 420), (screen_width/2 - 1*grid_size, 420), (screen_width/2 - 2*grid_size, 420)] # idx 0 is the head, the rest is the body
+        self.snake_blocks = [(screen_width/2, 420), (screen_width/2 - 1*grid_size, 420), (screen_width/2 - 2*grid_size, 420), (screen_width/2 - 3*grid_size, 420), (screen_width/2 - 4*grid_size, 420)] # idx 0 is the head, the rest is the body
         self.last_tail = (0,0)
         self.score = 0
         self.direction = (1,0)
@@ -71,6 +72,7 @@ class Snake():
 
     def eat_food(self, food):
         self.score = self.score + food.score
+        make_food()
 
     def get_score(self):
         return self.score
@@ -83,17 +85,17 @@ class Food():
         self.check_eaten = False
 
 def render_food(food: Food): # Implement after we figure out pygame
-    pass
+    pygame.draw.rect(screen,colorFood,[MINx + food.position[0] * grid_size, MINy + food.position[1] * grid_size, grid_size,grid_size])
 
 def make_food():
-    position = (random.randint(0,640), random.randint(0,640))
+    position = (random.randint(0,19), random.randint(0,19))
     food = Food(position)
-    render_food(food)
+    return food
 
 def setup():
 
     snake = Snake()
-
+    food = make_food()
     while True:
         clock.tick(5)
         direction = None
@@ -119,6 +121,7 @@ def setup():
         # pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
 
         screen.blit(checker, (0,100))
+        render_food(food)
         for block in snake.snake_blocks:
             pygame.draw.rect(screen,colorSnake,[block[0],block[1],grid_size,grid_size])
         

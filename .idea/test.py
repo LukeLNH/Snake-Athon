@@ -23,6 +23,7 @@ colorPrim = (64,71,109)
 colorSec = (235,101,52)
 colorSnake = (100,100,100)
 
+
 # Drawing Rectangle
 pygame.draw.rect(screen, colorPrim, pygame.Rect(0, 0, 640, 740))
 
